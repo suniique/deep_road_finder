@@ -108,8 +108,6 @@ venv.bak/
 
 *.sqlite3
 
-venv/
-
 # Mac filesystem
 .DS_Store
 
