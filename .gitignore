@@ -110,4 +110,10 @@ venv.bak/
 
 venv/
 
+# Mac filesystem
 .DS_Store
+
+# node modules
+/frontend/node_modules
+
+

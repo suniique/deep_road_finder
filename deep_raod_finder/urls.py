@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from deep_raod_finder.index import views as index_view
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(r'', index_view.index_page)
 ]
