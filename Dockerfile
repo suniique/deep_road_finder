@@ -6,7 +6,9 @@ WORKDIR /home/Service
 
 # Bundle app source
 COPY . /home/Service
+WORKDIR /home/Service/frontend
 RUN npm install --production
 
-EXPOSE 8086
-CMD [ "npm", "run", "serve" ]
+EXPOSE 8000
+WORKDIR /home/Service
+CMD [ "python3", "manage.py", "runserver", "8000" ]
