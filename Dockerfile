@@ -1,4 +1,4 @@
-FROM my/node:8
+FROM my/node-django:8
 
 # Create app directory
 RUN mkdir -p /home/Service
