@@ -1,8 +1,8 @@
 {
   "name": "y",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "yomete <iamlese@yahoo.com>",
+  "description": "",
+  "author": "",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
