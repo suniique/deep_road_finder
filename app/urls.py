@@ -1,4 +1,4 @@
-"""deep_raod_finder URL Configuration
+"""app URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from deep_raod_finder.index import views as index_view
+from app.index import views as index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
