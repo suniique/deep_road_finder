@@ -22,14 +22,17 @@
     </ul>
     <div class="columns">
       <div class="column">
-        <h3>Current Model Monitor</h3>
+        <h3>Accuracy of Model Name</h3>
         <line-chart></line-chart>
       </div>
+    </div>
+    <div class="columns">
       <div class="column">
-        <h3>Comparation</h3>
-        <bar-chart></bar-chart>
+        <h3>Output of Network</h3>
+        <img src="../assets/mask.png">
       </div>
     </div>
+
     <!--<div class="columns">
       <div class="column">
         <h3>Bubble Chart</h3>
