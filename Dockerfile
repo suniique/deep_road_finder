@@ -1,5 +1,6 @@
 FROM my/node-django:8
 
+RUN /bin/bash -c "source /root/.bashrc"
 RUN echo $MYSQL_DB_USER
 
 # Create app directory
