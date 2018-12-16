@@ -1,5 +1,7 @@
 FROM my/node-django:8
 
+RUN echo $MYSQL_DB_USER
+
 # Create app directory
 RUN mkdir -p /home/Service
 WORKDIR /home/Service
