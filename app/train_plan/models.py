@@ -29,7 +29,7 @@ class Trial(models.Model):
     devices = models.CharField(max_length=64)
     total_epoch = models.IntegerField()
     iteration_per_epoch = models.IntegerField()
-    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='trials')
 
 
 class Record(models.Model):
@@ -37,20 +37,16 @@ class Record(models.Model):
     iteration = models.IntegerField()
     time = models.DateTimeField(auto_now_add=True)
 
+    loss = models.FloatField()
+    acc = models.FloatField()
+    iou = models.FloatField()
+    recall = models.FloatField()
+    precision = models.FloatField()
+
 
 class TrainRecord(Record):
-    train_loss = models.FloatField()
-    train_acc = models.FloatField()
-    train_iou = models.FloatField()
-    train_recall = models.FloatField()
-    train_precision = models.FloatField()
-    trial = models.ForeignKey(Trial, on_delete=models.CASCADE)
+    trial = models.ForeignKey(Trial, on_delete=models.CASCADE, related_name='train_records')
 
 class TestRecord(Record):
-    test_loss = models.FloatField()
-    test_acc = models.FloatField()
-    test_iou = models.FloatField()
-    test_recall = models.FloatField()
-    test_precision = models.FloatField()
-    trial = models.ForeignKey(Trial, on_delete=models.CASCADE)
+    trial = models.ForeignKey(Trial, on_delete=models.CASCADE, related_name='test_records')
 

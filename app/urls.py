@@ -15,10 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework.routers import SimpleRouter
 
 from app.index import views as index_view
+from app.train_plan import views as train_plan_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'', index_view.index_page)
 ]
+
+router = SimpleRouter()
+router.register('api/plan', train_plan_view.PlanEdit)
+router.register('api/trial', train_plan_view.TrialEdit)
+
+urlpatterns += router.urls
