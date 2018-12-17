@@ -29,6 +29,7 @@ class Trial(models.Model):
     devices = models.CharField(max_length=64)
     total_epoch = models.IntegerField()
     iteration_per_epoch = models.IntegerField()
+    logs = models.TextField()
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='trials')
 
 

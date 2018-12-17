@@ -49,6 +49,7 @@ class Worker(ConsumerProducerMixin):
             print('stopping...')
             recorder.terminate()
             train_thread.join()
+            exit(0)
 
         message.ack()
         self.properties = message.properties

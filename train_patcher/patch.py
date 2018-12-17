@@ -2,6 +2,7 @@ import time
 import os
 import json
 import threading
+import subprocess
 import app.train_plan.models as models
 from kombu import Connection, Producer, Consumer, Queue, uuid, eventloop
 
@@ -57,6 +58,7 @@ class NewRecord:
 
     @classmethod
     def create_record(self, data):
+        print(data)
         data = json.loads(data)
         dic = {
             "trial_id": data.get('trial_id', -1),
@@ -77,13 +79,23 @@ class Patcher:
         self.listen_thread = threading.Thread(target=self.client.receive_message)
         print('send connect!')
 
-    def start_train(self, epoch, url):
+    def start_train(self, epoch, url, path='train_patcher/fake_trainer.py'):
         trial_id = int(url.split('/')[-2])
-        print('send start!', url)
 
-        data = {"action": "train", "epoch": epoch, "trial_id": trial_id}
-        self.client.call(data)
-        self.listen_thread.start()
+        trial_record = models.Trial.objects.get(id=trial_id)
+        trial_record.logs += "Run file: %s\n" % path
+        trial_record.is_active = True
+        trial_record.save()
+
+        self.subproc = subprocess.Popen(["python3", path], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        time.sleep(1)
+        if self.subproc.poll() is not None:
+            print("Fail to run file!")
+        else:
+            print('send start!', url)
+            data = {"action": "train", "epoch": epoch, "trial_id": trial_id}
+            self.client.call(data)
+            self.listen_thread.start()
 
     def stop_train(self):
         data = {"action": "stop"}
@@ -91,6 +103,10 @@ class Patcher:
         time.sleep(1)
         self.client.call(data)
         self.listen_thread.join()
+
+        print("exit with: ", self.subproc.poll())
+        self.subproc.terminate()
+
 
 if __name__=="__main__":
     p = Patcher()
