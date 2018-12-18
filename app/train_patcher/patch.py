@@ -78,26 +78,26 @@ class NewRecord:
         models.TrainRecord.objects.create(**dic)
 
     @accept_websocket
-    def register(self, request, id):
+    def client_register(self, request, id):
         if request.is_websocket:
             lock = threading.RLock()
             try:
                 lock.acquire()
                 self.clients.append(request.websocket)
                 print("Add to clients group:", request.path)
-                request.send("Success!")
+                request.websocket.send("Success!")
             finally:
                 lock.release()
 
     @accept_websocket
-    def release(self, request, id):
+    def client_release(self, request, id):
         if request.is_websocket:
             lock = threading.RLock()
             try:
                 lock.acquire()
                 self.clients.remove(request.websocket)
                 print("remove client:", request.path)
-                request.send("Success!")
+                request.websocket.send("Success!")
             finally:
                 lock.release()
 

@@ -24,8 +24,8 @@ from app.train_patcher.patch import NewRecord as records
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/websocket/register/<int:id>', records.register),
-    path('api/websocket/finish/<int:id>', records.release),
+    path('api/websocket/register/<int:id>', records.client_register),
+    path('api/websocket/finish/<int:id>', records.client_release),
     # path('api/websocket/', records.release),
     path(r'', index_view.index_page)
 ]
