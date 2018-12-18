@@ -4,6 +4,7 @@ import json
 import threading
 import subprocess
 import app.train_plan.models as models
+from dwebsocket.decorators import accept_websocket,require_websocket
 from kombu import Connection, Producer, Consumer, Queue, uuid, eventloop
 
 
@@ -52,14 +53,16 @@ class Client(object):
     def terminate(self):
         self.terminated = True
 
+
+
 class NewRecord:
     def __init__(self):
-        pass
+        self.clients = []
 
-    @classmethod
-    def create_record(self, data):
+    def create_record(self, data, submit_with_websocket=True):
         print(data)
         data = json.loads(data)
+        trial_id = data.get('trial_id', -1)
         dic = {
             "trial_id": data.get('trial_id', -1),
             "epoch": data.get('epoch', -1),
@@ -70,7 +73,39 @@ class NewRecord:
             "recall": data.get('loss', -1),
             "precision": data.get('loss', -1),
         }
+        if submit_with_websocket:
+            self.send_websocket(json.dumps(dic), trial_id)
         models.TrainRecord.objects.create(**dic)
+
+    @accept_websocket
+    def register(self, request, id):
+        if request.is_websocket:
+            lock = threading.RLock()
+            try:
+                lock.acquire()
+                self.clients.append(request.websocket)
+                print("Add to clients group:", request.path)
+                request.send("Success!")
+            finally:
+                lock.release()
+
+    @accept_websocket
+    def release(self, request, id):
+        if request.is_websocket:
+            lock = threading.RLock()
+            try:
+                lock.acquire()
+                self.clients.remove(request.websocket)
+                print("remove client:", request.path)
+                request.send("Success!")
+            finally:
+                lock.release()
+
+    @accept_websocket
+    def send_websocket(self, data, id):
+        for client in self.clients:
+            client.send(data)
+
 
 class Patcher:
     def __init__(self):

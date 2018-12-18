@@ -19,14 +19,20 @@ from rest_framework.routers import SimpleRouter
 
 from app.index import views as index_view
 from app.train_plan import views as train_plan_view
+from app.train_patcher.patch import NewRecord as records
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/websocket/register/<int:id>', records.register),
+    path('api/websocket/finish/<int:id>', records.release),
+    # path('api/websocket/', records.release),
     path(r'', index_view.index_page)
 ]
 
 router = SimpleRouter()
 router.register('api/plan', train_plan_view.PlanEdit)
 router.register('api/trial', train_plan_view.TrialEdit)
+router.register('api/record', train_plan_view.RecordEdit)
 
 urlpatterns += router.urls

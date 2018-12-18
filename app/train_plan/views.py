@@ -1,7 +1,7 @@
 from rest_framework import mixins,viewsets
 from .models import Plan, Trial, Record
 from .serializers import PlanSerializer, TrialSerializer, RecordSerializer
-from train_patcher.patch import Patcher
+from app.train_patcher.patch import Patcher
 
 patch = Patcher()
 
@@ -40,10 +40,8 @@ class TrialEdit(mixins.ListModelMixin,
 
 class RecordEdit(mixins.ListModelMixin,
                viewsets.GenericViewSet,
-               mixins.RetrieveModelMixin,
-               mixins.UpdateModelMixin,
-               mixins.DestroyModelMixin,
-               mixins.CreateModelMixin):
+               mixins.RetrieveModelMixin
+                 ):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
 
