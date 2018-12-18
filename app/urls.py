@@ -13,21 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from app.index import views as index_view
 from app.train_plan import views as train_plan_view
-from app.train_patcher.patch import NewRecord as records
+from app.train_patcher import views as train_patcher_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/websocket/register/<int:id>', records.client_register),
-    path('api/websocket/finish/<int:id>', records.client_release),
-    # path('api/websocket/', records.release),
-    path(r'', index_view.index_page)
+    path('api/websocket/register/<int:id>', train_patcher_view.client_register),
+    path('api/websocket/finish/<int:id>', train_patcher_view.client_release),
+    # path('api/websocket/record/<int:id>', train_patcher_view.client_release),
+    path('ws_test/', index_view.ws_test_page),
+    path('', index_view.index_page)
 ]
 
 router = SimpleRouter()
