@@ -1,41 +1,24 @@
 import threading
-from dwebsocket.decorators import accept_websocket,require_websocket
-
-clients = []
-
-@accept_websocket
-def client_register(request, id):
-    if request.is_websocket:
-        lock = threading.RLock()
-        try:
-            lock.acquire()
-            clients.append({
-                "conn": request.websocket,
-                "id": id})
-            print("Add to clients group:", request.path)
-            request.websocket.send("Success!")
-        finally:
-            lock.release()
+from channels.generic.websocket import WebsocketConsumer
 
 
-@accept_websocket
-def client_release(request, id):
-    if request.is_websocket:
-        lock = threading.RLock()
-        try:
-            lock.acquire()
-            clients.remove({
-                "conn": request.websocket,
-                "id": id})
-            print("remove client:", request.path)
-            request.websocket.send("Success!")
-        finally:
-            lock.release()
+class RecoderSender(WebsocketConsumer):
+
+    instances = []
+
+    def connect(self):
+        self.accept()
+        self.trial_id = int(self.scope['url_route']['kwargs']['trial_id'])
+        RecoderSender.instances.append(self)
+        self.send(text_data="Connected!")
+
+    def websocket_send(self, data, trial_id):
+        if trial_id == self.trial_id:
+            self.send(text_data=data)
+            print("send data via websocket:", data)
+
+    def disconnect(self, code):
+        RecoderSender.instances.remove(self)
+        print("websocket disconnected.")
 
 
-@accept_websocket
-def send_websocket(data, id):
-    for client in clients:
-        if client["id"] == id:
-            conn = client["conn"]
-            conn.send(data)

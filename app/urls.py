@@ -25,8 +25,7 @@ from app.train_patcher import views as train_patcher_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/websocket/register/<int:id>', train_patcher_view.client_register),
-    path('api/websocket/finish/<int:id>', train_patcher_view.client_release),
+
     # path('api/websocket/record/<int:id>', train_patcher_view.client_release),
     path('ws_test/', index_view.ws_test_page),
     path('', index_view.index_page)
