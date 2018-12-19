@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Model Args">
-          <el-input v-for="(arg,index) in modelForm.para" v-bind:key="'arg' + index" class="my_form"></el-input>
+          <el-input v-for="(arg,index) in modelForm.args_list" :key="index" class="my_form" v-model="modelForm.args_list[index]"></el-input>
           <b-button class="mybutton" size="sm" variant="warning" v-on:click="addArg">
             Add New Arg
           </b-button>
@@ -53,17 +53,24 @@
           name: '',
           engine: '',
           model: '',
-          para: []
+          args_list: [''],
+          repository: 1,
+          para: ''
         }
       }
     },
     methods: {
       onSubmit () {
-        this.axios.post('/api/plan/', this.modelForm, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        })
+        this.modelForm.para = this.modelForm.args_list.join()
+        console.log(this)
+        this.axios.post('/api/plan/', this.qs.stringify(
+          {
+            'name': this.modelForm.name,
+            'engine': this.modelForm.engine,
+            'repository': this.modelForm.repository,
+            'para': this.modelForm.para,
+            'model': this.modelForm.model
+          }))
         .then(function (response) {
           console.log(response)
         })
@@ -72,10 +79,10 @@
         })
       },
       addArg () {
-        this.modelForm.para.push(' ')
+        this.modelForm.args_list.push(' ')
       },
       removeArg () {
-        this.modelForm.para.pop()
+        this.modelForm.args_list.pop()
       }
     }
   }
