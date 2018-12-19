@@ -32,6 +32,7 @@ urlpatterns = [
 ]
 
 router = SimpleRouter()
+router.register('api/repo', train_plan_view.RepoEdit)
 router.register('api/plan', train_plan_view.PlanEdit)
 router.register('api/trial', train_plan_view.TrialEdit)
 router.register('api/record', train_plan_view.RecordEdit)
