@@ -1,6 +1,17 @@
 
 from rest_framework import serializers
-from .models import Plan, Trial, Record
+from .models import Repository, Plan, Trial, Record
+
+class RepoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Repository
+        fields = '__all__'
+
+    def to_representation(self, instance):
+
+        data = super().to_representation(instance)
+        return data
 
 
 class PlanSerializer(serializers.ModelSerializer):

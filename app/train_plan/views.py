@@ -1,9 +1,18 @@
 from rest_framework import mixins,viewsets
-from .models import Plan, Trial, Record
-from .serializers import PlanSerializer, TrialSerializer, RecordSerializer
+from .models import Repository, Plan, Trial, Record
+from .serializers import RepoSerializer, PlanSerializer, TrialSerializer, RecordSerializer
 from app.train_patcher.patch import Patcher
 
 patch = Patcher()
+
+class RepoEdit(mixins.ListModelMixin,
+               viewsets.GenericViewSet,
+               mixins.RetrieveModelMixin,
+               mixins.UpdateModelMixin,
+               mixins.DestroyModelMixin,
+               mixins.CreateModelMixin):
+    queryset = Repository.objects.all()
+    serializer_class = RepoSerializer
 
 class PlanEdit(mixins.ListModelMixin,
                viewsets.GenericViewSet,
