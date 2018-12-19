@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import Repository, Plan, Trial, Record
+from .models import *
 
 class RepoSerializer(serializers.ModelSerializer):
 
@@ -41,9 +41,32 @@ class TrialSerializer(serializers.ModelSerializer):
 class RecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
-        fields = ['epoch', 'iteration', 'time']
+        fields = ['epoch', 'iteration', 'time', 'iou', 'acc', 'recall', 'precision', 'loss']
 
     def to_representation(self, instance):
 
         data = super().to_representation(instance)
         return data
+
+
+# class TrainRecordSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TrainRecord
+#         fields = ['epoch', 'iteration', 'time']
+#
+#     def to_representation(self, instance):
+#
+#         data = super().to_representation(instance)
+#         return data
+#
+#
+# class TestRecordSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TestRecord
+#         fields = ['epoch', 'iteration', 'time']
+#
+#     def to_representation(self, instance):
+#
+#         data = super().to_representation(instance)
+#         return data
+
