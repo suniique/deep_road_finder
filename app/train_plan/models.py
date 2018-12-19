@@ -18,7 +18,7 @@ class Plan(models.Model):
     engine = models.CharField(max_length=64)
     para = models.TextField()
 
-    repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
+    repository = models.ForeignKey(Repository, on_delete=models.CASCADE, related_name='plans')
 
 
 class Trial(models.Model):

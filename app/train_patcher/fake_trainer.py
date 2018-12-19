@@ -47,9 +47,9 @@ class Worker(ConsumerProducerMixin):
             train_thread.start()
         elif action == 'stop':
             print('stopping...')
-            message.ack()
             recorder.terminate()
             train_thread.join()
+            message.ack()
             exit(0)
 
         message.ack()
@@ -112,7 +112,13 @@ if __name__ == "__main__":
     recorder = TrainRecorder(worker)
     train_thread = threading.Thread(target=recorder.tic_toc)
 
-    worker.run()
+
+    try:
+        worker.run()
+    except (SystemExit, KeyboardInterrupt):
+        print("killed...")
+        recorder.terminate()
+        exit(0)
 
 
 

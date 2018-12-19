@@ -7,7 +7,7 @@ class PlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['id', 'name', 'model', 'create_time', 'engine', 'para', 'trials']
+        fields = ['id', 'repository', 'name', 'model', 'create_time', 'engine', 'para', 'trials']
 
     def to_representation(self, instance):
 
@@ -19,7 +19,7 @@ class TrialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trial
-        fields = ['id', 'state', 'devices', 'create_time', 'last_time',
+        fields = ['id', 'plan', 'state', 'devices', 'create_time', 'last_time',
                   'total_epoch', 'iteration_per_epoch', 'train_records', 'test_records']
 
     def to_representation(self, instance):
