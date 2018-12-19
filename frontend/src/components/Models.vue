@@ -20,10 +20,11 @@
     </ul>
     <div class="columns">
       <div class="column">
-        <Card :accuarcy="props.accuracy"
-              :trainTime="props.trainTime"></Card>
-        <Card></Card>
-        <Card></Card>
+        <Card v-for="(each_card, index) in card_list"
+              :key="index"
+              :engine="each_card.engine"
+              :create_time="each_card.create_time"
+              :name="each_card.name"></Card>
       </div>
     </div>
   </section>
@@ -35,12 +36,16 @@ export default {
   components: {Card},
   data () {
     return {
-      props: {
-        name: 'model #1',
-        accuracy: '99.78%',
-        trainTime: '1.53h'
-      }
+      card_list: []
     }
+  },
+  mounted () {
+    let _self = this
+    this.axios.get('/api/plan/')
+      .then(function (res) {
+        console.log(res.data)
+        _self.card_list = res.data
+      })
   }
 }
 </script>
