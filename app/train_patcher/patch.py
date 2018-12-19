@@ -76,7 +76,11 @@ class NewRecord:
             "precision": data.get('loss', -1),
         }
         if submit_with_websocket:
-            views.send_websocket(json.dumps(dic), trial_id)
+            data = json.dumps(data)
+            # views.RecoderSender.group_send(json.dumps(data), trial_id)
+            for i in views.RecoderSender.instances:
+                i.websocket_send(data, trial_id)
+
         models.TrainRecord.objects.create(**dic)
 
 
@@ -87,7 +91,13 @@ class Patcher:
         self.listen_thread = threading.Thread(target=self.client.receive_message)
         print('send connect!')
 
-    def start_train(self, epoch, url, path='train_patcher/fake_trainer.py'):
+    def start_train(self, epoch, url, path=''):
+        if path == '':
+            path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                'fake_trainer.py'
+                )
+
         trial_id = int(url.split('/')[-2])
 
         trial_record = models.Trial.objects.get(id=trial_id)
@@ -95,25 +105,33 @@ class Patcher:
         trial_record.is_active = True
         trial_record.save()
 
-        self.subproc = subprocess.Popen(["python3", path], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        self.subproc = subprocess.Popen(["python3", path], stdin=subprocess.PIPE)
         time.sleep(1)
+
         if self.subproc.poll() is not None:
-            print("Fail to run file!")
+            print("Fail to run file!", trial_id)
+
+            for i in views.RecoderSender.instances:
+                i.websocket_send("Fail to run file!", trial_id)
+
         else:
             print('send start!', url)
+            for i in views.RecoderSender.instances:
+                i.websocket_send("Start training!", trial_id)
+
             data = {"action": "train", "epoch": epoch, "trial_id": trial_id}
             self.client.call(data)
             self.listen_thread.start()
 
     def stop_train(self):
+        print("backend ready to kill the training process...")
         data = {"action": "stop"}
-        self.client.terminate()
-        time.sleep(1)
-        self.client.call(data)
-        self.listen_thread.join()
-
+        # self.client.terminate()
+        # time.sleep(1)
+        self.client.call(json.dumps(data))
         print("exit with: ", self.subproc.poll())
         self.subproc.terminate()
+        self.listen_thread.join()
 
 
 if __name__=="__main__":

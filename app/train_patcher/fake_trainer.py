@@ -47,6 +47,7 @@ class Worker(ConsumerProducerMixin):
             train_thread.start()
         elif action == 'stop':
             print('stopping...')
+            message.ack()
             recorder.terminate()
             train_thread.join()
             exit(0)
