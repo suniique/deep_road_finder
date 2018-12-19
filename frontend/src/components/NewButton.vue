@@ -1,16 +1,20 @@
 <template>
-    <div class="col-md-4">
-        <b-button class='mybutton' :size='props.size' :variant='props.variant'>
-            Model #1
+    <div id='NewButton'>
+        <b-button class='mybutton' :size='size' :variant='variant'>
+            {{name}}
         </b-button>
     </div>
 </template>
 
 <script>
 export default {
+  name: 'NewButton',
   data () {
     return {
-      props: {
+      props: ['name', 'size', 'variant'],
+      data: {
+        modelname: 'abc',
+        name: 'abc',
         size: 'sm',
         variant: 'warning'
       }
@@ -19,7 +23,7 @@ export default {
 }
 </script>
 
-<style  scoped>
+<style scoped>
     .mybutton {
         float: left;
         margin: 10px;

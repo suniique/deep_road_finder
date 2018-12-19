@@ -12,6 +12,7 @@
     "serve": "http-server -o -c-1 dist/ -p 8086"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
     "chart.js": "^2.6.0",
     "chartkick": "^2.2.4",
