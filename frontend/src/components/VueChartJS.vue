@@ -125,9 +125,6 @@
   .mybutton {
     float: left;
     margin: 10px;
-  }
-
-  .mybutton {
     color: white;
   }
 </style>

@@ -8,36 +8,36 @@
     </ul>
     <h1>Create A Training Plan</h1>
     <div class="columns my_form">
-      <el-form ref="form" :model="sizeForm" label-width="100px" size="medium">
+      <el-form ref="form" :model="modelForm" label-width="100px" size="medium">
         <el-form-item label="Plan Name">
-          <el-input v-model="sizeForm.name"></el-input>
+          <el-input v-model="modelForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Data Engine">
-          <el-select v-model="sizeForm.region" placeholder="Please Select Data Engine">
+          <el-select v-model="modelForm.engine" placeholder="Please Select Data Engine">
             <el-option label="Pandas" value="pandas"></el-option>
             <el-option label="MySQL" value="mysql"></el-option>
             <el-option label="Oracle" value="oracle"></el-option>
             <el-option label="TimesTen" value="timesten"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Create Time">
-          <el-col :span="11">
-            <el-date-picker type="date" placeholder="Date" v-model="sizeForm.date1" style="width: 100%;"></el-date-picker>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-time-picker type="fixed-time" placeholder="Date" v-model="sizeForm.date2" style="width: 100%;"></el-time-picker>
-          </el-col>
+        <el-form-item label="Model Args">
+          <el-input v-for="(arg,index) in modelForm.para" v-bind:key="'arg' + index" class="my_form"></el-input>
+          <b-button class="mybutton" size="sm" variant="warning" v-on:click="addArg">
+            Add New Arg
+          </b-button>
+          <b-button class="mybutton" size="sm" variant="warning" v-on:click="removeArg">
+            Remove Arg
+          </b-button>
         </el-form-item>
         <el-form-item label="Model Type">
-          <el-radio-group v-model="sizeForm.resource" size="medium">
+          <el-radio-group v-model="modelForm.model" size="medium">
             <el-radio border label="MLP"></el-radio>
             <el-radio border label="U-Net"></el-radio>
             <el-radio border label="VGG19"></el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item size="large">
-          <el-button type="primary" @click="onSubmit">Create!</el-button>
+          <el-button type="primary" v-on:click="onSubmit">Create!</el-button>
           <el-button>Cancel</el-button>
         </el-form-item>
       </el-form>
@@ -49,21 +49,33 @@
   export default {
     data () {
       return {
-        sizeForm: {
+        modelForm: {
           name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          engine: '',
+          model: '',
+          para: []
         }
       }
     },
     methods: {
       onSubmit () {
-        console.log('submit!')
+        this.axios.post('/api/plan/', this.modelForm, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      },
+      addArg () {
+        this.modelForm.para.push(' ')
+      },
+      removeArg () {
+        this.modelForm.para.pop()
       }
     }
   }
@@ -82,6 +94,12 @@
 
   a {
     color: #FFB119;
+  }
+
+  .mybutton {
+    float: left;
+    margin: 10px;
+    color: white;
   }
 
   .my_form {
